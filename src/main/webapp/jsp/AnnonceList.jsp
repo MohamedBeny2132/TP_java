@@ -1,5 +1,6 @@
 <%@ page import="org.univ_paris8.iut.montreuil.qdev.tp2025.gr7.jeuquizz.demo.bean.Annonce" %>
 <%@ page import="java.util.List" %>
+<%@ page import="org.univ_paris8.iut.montreuil.qdev.tp2025.gr7.jeuquizz.demo.bean.AnnonceSearchParams" %>
 <%@ page contentType="text/html; charset=UTF-8" %>
 <!DOCTYPE html>
 <html>
@@ -48,6 +49,48 @@
 
 <br>
 <a href="${pageContext.request.contextPath}/annonce/add">Ajouter une nouvelle annonce</a>
+
+<!-- Pagination -->
+<%
+    int currentPage = (int) request.getAttribute("currentPage");
+    int nbrPages = (int) request.getAttribute("nbrPages");
+    AnnonceSearchParams params = (AnnonceSearchParams) request.getAttribute("params");
+
+    String queryParams = "";
+    if (params != null) {
+        if (params.getKeyword() != null) queryParams += "&keyword=" + params.getKeyword();
+        if (params.getStatus() != null) queryParams += "&status=" + params.getStatus();
+        if (params.getCategoryId() != null) queryParams += "&categoryId=" + params.getCategoryId();
+    }
+%>
+
+<div>
+    <%
+        if (currentPage > 1) {
+    %>
+    <a href="?page=<%= currentPage - 1 %>&size=<%= params.getSize() %><%= queryParams %>">← Précédent</a>
+    <%
+        }
+
+        for (int i = 1; i <= nbrPages; i++) {
+            if (i == currentPage) {
+    %>
+    <strong><%= i %></strong>
+    <%
+    } else {
+    %>
+    <a href="?page=<%= i %>&size=<%= params.getSize() %><%= queryParams %>"><%= i %></a>
+    <%
+            }
+        }
+
+        if (currentPage < nbrPages) {
+    %>
+    <a href="?page=<%= currentPage + 1 %>&size=<%= params.getSize() %><%= queryParams %>">Suivant →</a>
+    <%
+        }
+    %>
+</div>
 
 </body>
 </html>

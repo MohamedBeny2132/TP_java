@@ -1,12 +1,12 @@
-package org.univ_paris8.iut.montreuil.qdev.tp2025.gr7.jeuquizz.demo;
+package org.univ_paris8.iut.montreuil.qdev.tp2025.gr7.jeuquizz.demo.utils;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 public class ConnectionDB {
-    private String url = "jdbc:postgresql://localhost:5433/MasterAnnonce";
-    private String user = "postgres";
-    private String passwd = "password13";
+    private String url = "jdbc:postgresql://localhost:5432/MasterAnnonce";
+    private String user = "test";
+    private String passwd = "test";
     /**
      * Objet Connection
      */
