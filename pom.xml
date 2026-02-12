@@ -19,6 +19,18 @@
 
     <dependencies>
 
+        <dependency>
+            <groupId>org.mindrot</groupId>
+            <artifactId>jbcrypt</artifactId>
+            <version>0.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jstl</artifactId>
+            <version>1.2</version>
+        </dependency>
+
         <!-- Servlet API pour Tomcat 9 -->
         <dependency>
             <groupId>javax.servlet</groupId>

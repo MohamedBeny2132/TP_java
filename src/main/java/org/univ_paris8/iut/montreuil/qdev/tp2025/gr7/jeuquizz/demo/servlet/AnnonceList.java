@@ -61,15 +61,12 @@ public class AnnonceList extends HttpServlet {
         }
 
         // Récupération paginée
-        PaginatedResponses<Annonce> annonces = annonceService.getAllAnnoncesWithParams(params);
+        PaginatedResponses<Annonce> paginatedAnnonces = annonceService.getAllAnnoncesWithParams(params);
 
-        // Envoi vers JSP
-        request.setAttribute("annonces", annonces.getItems());
-        request.setAttribute("currentPage", page);
-        request.setAttribute("nbrPages", annonces.getTotalPages());
+        // Envoi vers JSP - on envoie l'objet complet
+        request.setAttribute("paginatedAnnonces", paginatedAnnonces);
         request.setAttribute("params", params);
 
         request.getRequestDispatcher("/jsp/AnnonceList.jsp").forward(request, response);
     }
-
 }

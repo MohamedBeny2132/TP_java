@@ -114,6 +114,10 @@ public class Annonce {
         this.date = date;
     }
 
+    public Status getStatus() {
+        return status;
+    }
+
     @Override
     public String toString() {
         return "Annonce{" +
