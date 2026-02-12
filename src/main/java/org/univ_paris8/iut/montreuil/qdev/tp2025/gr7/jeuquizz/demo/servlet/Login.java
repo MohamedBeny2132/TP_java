@@ -31,7 +31,7 @@ public class Auth extends HttpServlet {
             return;
         }
 
-        request.getRequestDispatcher("/jsp/login.jsp").forward(request, response);
+        request.getRequestDispatcher("/jsp/Connection.jsp").forward(request, response);
     }
 
     @Override
@@ -44,7 +44,7 @@ public class Auth extends HttpServlet {
         if (email == null || email.trim().isEmpty() ||
                 password == null || password.trim().isEmpty()) {
             request.setAttribute("error", "Veuillez remplir tous les champs");
-            request.getRequestDispatcher("/jsp/login.jsp").forward(request, response);
+            request.getRequestDispatcher("/jsp/Connection.jsp").forward(request, response);
             return;
         }
 
@@ -56,7 +56,7 @@ public class Auth extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/annonce/list");
         } else {
             request.setAttribute("error", "Email ou mot de passe incorrect");
-            request.getRequestDispatcher("/jsp/login.jsp").forward(request, response);
+            request.getRequestDispatcher("/jsp/Connection.jsp").forward(request, response);
         }
     }
 }
