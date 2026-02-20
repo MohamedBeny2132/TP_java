@@ -9,12 +9,10 @@ public class JPAUtil {
     private static final EntityManagerFactory emf =
             Persistence.createEntityManagerFactory("default"); // nom du persistence-unit dans persistence.xml
 
-    // Méthode pour obtenir un EntityManager
     public static EntityManager getEntityManager() {
         return emf.createEntityManager();
     }
 
-    // Optionnel : fermer l'EntityManagerFactory à la fin de l'application
     public static void close() {
         if (emf != null && emf.isOpen()) {
             emf.close();

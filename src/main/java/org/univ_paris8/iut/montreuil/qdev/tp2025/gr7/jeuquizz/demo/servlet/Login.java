@@ -12,7 +12,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 @WebServlet("/login")
-public class Auth extends HttpServlet {
+public class Login extends HttpServlet {
 
     private AuthService authService;
 

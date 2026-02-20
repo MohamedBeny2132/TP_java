@@ -5,9 +5,7 @@ import jakarta.persistence.TypedQuery;
 import org.univ_paris8.iut.montreuil.qdev.tp2025.gr7.jeuquizz.demo.bean.Annonce;
 import org.univ_paris8.iut.montreuil.qdev.tp2025.gr7.jeuquizz.demo.bean.AnnonceSearchParams;
 import org.univ_paris8.iut.montreuil.qdev.tp2025.gr7.jeuquizz.demo.bean.PaginatedResponses;
-import org.univ_paris8.iut.montreuil.qdev.tp2025.gr7.jeuquizz.demo.utils.JPAUtil;
 
-import java.sql.SQLException;
 import java.util.List;
 
 public class AnnonceRepository extends DAO<Annonce> {
@@ -16,24 +14,24 @@ public class AnnonceRepository extends DAO<Annonce> {
     }
 
     @Override
-    public void create(Annonce obj) {
-        EntityManager em = JPAUtil.getEntityManager();
+    public void create(Annonce obj, EntityManager em) {
         em.persist(obj);
     }
 
     @Override
-    public List<Annonce> findAll() {
-        EntityManager em = JPAUtil.getEntityManager();
-        TypedQuery<Annonce> query = em.createQuery("SELECT a FROM Annonce a", Annonce.class);
+    public List<Annonce> findAll(EntityManager em) {
+        // Use JOIN FETCH to avoid LazyInitializationException
+        String jpql = "SELECT a FROM Annonce a JOIN FETCH a.author JOIN FETCH a.category ORDER BY a.date DESC";
+        TypedQuery<Annonce> query = em.createQuery(jpql, Annonce.class);
         return query.getResultList();
     }
 
-    public PaginatedResponses<Annonce> findAllWithParam(AnnonceSearchParams params) {
-        EntityManager em = JPAUtil.getEntityManager();
+    public PaginatedResponses<Annonce> findAllWithParam(AnnonceSearchParams params, EntityManager em) {
 
         try {
-            // Requête principale pour récupérer les annonces filtrées
-            StringBuilder jpql = new StringBuilder("SELECT a FROM Annonce a WHERE 1=1");
+            // Requête principale pour récupérer les annonces filtrées avec JOIN FETCH
+            StringBuilder jpql = new StringBuilder(
+                    "SELECT a FROM Annonce a JOIN FETCH a.author JOIN FETCH a.category WHERE 1=1");
 
             if (params.getKeyword() != null && !params.getKeyword().isBlank()) {
                 jpql.append(" AND (LOWER(a.title) LIKE :keyword OR LOWER(a.description) LIKE :keyword)");
@@ -66,7 +64,7 @@ public class AnnonceRepository extends DAO<Annonce> {
             query.setMaxResults(size);
             List<Annonce> annonces = query.getResultList();
 
-            // Requête COUNT pour total
+            // Requête COUNT pour total (pas besoin de JOIN FETCH ici)
             StringBuilder countJpql = new StringBuilder("SELECT COUNT(a) FROM Annonce a WHERE 1=1");
             if (params.getKeyword() != null && !params.getKeyword().isBlank()) {
                 countJpql.append(" AND (LOWER(a.title) LIKE :keyword OR LOWER(a.description) LIKE :keyword)");
@@ -95,29 +93,35 @@ public class AnnonceRepository extends DAO<Annonce> {
             return new PaginatedResponses<>(annonces, page, totalPages);
 
         } finally {
-            em.close();
+            // em.close(); NO! Service handles this.
         }
     }
 
-
-
-
     @Override
-    public Annonce findById(int id) {
-        EntityManager em = JPAUtil.getEntityManager();
-        return em.find(Annonce.class, id);
+    public Annonce findById(int id, EntityManager em) {
+        // We can't use em.find() if we want eager fetching for associated entities
+        // em.find(Annonce.class, id) might be lazy or not depending on Entity config
+        // But to be safe and consistent with findAll, lets use JPQL with JOIN FETCH
+        try {
+            return em
+                    .createQuery("SELECT a FROM Annonce a JOIN FETCH a.author JOIN FETCH a.category WHERE a.id = :id",
+                            Annonce.class)
+                    .setParameter("id", (long) id) // Casting to long because Annonce ID is Long in Entity but Int in
+                                                   // DAO signature... wait, let me check entity
+                    .getSingleResult();
+        } catch (jakarta.persistence.NoResultException e) {
+            return null;
+        }
     }
 
     @Override
-    public void update(Annonce obj) {
-        EntityManager em = JPAUtil.getEntityManager();
+    public void update(Annonce obj, EntityManager em) {
         em.merge(obj);
     }
 
     @Override
-    public void delete(int id) {
-        EntityManager em = JPAUtil.getEntityManager();
-        Annonce annonce = em.find(Annonce.class, id);
+    public void delete(int id, EntityManager em) {
+        Annonce annonce = em.find(Annonce.class, id); // find is enough for delete, we just need the reference
         if (annonce != null) {
             em.remove(annonce);
         }

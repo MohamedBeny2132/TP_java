@@ -33,7 +33,6 @@ public class Annonce {
     @Column(nullable = false, length = 20)
     private Status status;
 
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author_id", nullable = false)
     private User author;
@@ -41,7 +40,6 @@ public class Annonce {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
-
 
     public Annonce() {
     }
@@ -64,7 +62,6 @@ public class Annonce {
         this.date = date;
         this.status = Status.DRAFT;
     }
-
 
     public int getId() {
         return id;
@@ -116,6 +113,22 @@ public class Annonce {
 
     public Status getStatus() {
         return status;
+    }
+
+    public User getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(User author) {
+        this.author = author;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
     }
 
     @Override
