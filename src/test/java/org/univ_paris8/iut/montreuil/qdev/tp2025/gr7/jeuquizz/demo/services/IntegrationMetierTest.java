@@ -1,10 +1,8 @@
 package org.univ_paris8.iut.montreuil.qdev.tp2025.gr7.jeuquizz.demo.services;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityTransaction;
 import org.junit.jupiter.api.*;
 import org.univ_paris8.iut.montreuil.qdev.tp2025.gr7.jeuquizz.demo.bean.*;
-import org.univ_paris8.iut.montreuil.qdev.tp2025.gr7.jeuquizz.demo.dao.CategoryRepository;
 import org.univ_paris8.iut.montreuil.qdev.tp2025.gr7.jeuquizz.demo.utils.JPAUtil;
 
 import java.util.List;
@@ -24,7 +22,6 @@ class IntegrationMetierTest {
 
     private static AuthService authService;
     private static AnnonceService annonceService;
-    private static CategoryRepository categoryRepository;
 
     private static User testUser;
     private static Category testCategory;
@@ -34,21 +31,20 @@ class IntegrationMetierTest {
     static void setUpAll() {
         authService = new AuthService();
         annonceService = new AnnonceService();
-        categoryRepository = new CategoryRepository();
 
-        // Préparer une catégorie réutilisable
+        // Utiliser une catégorie existante du import.sql pour éviter les conflits d'IDs
         EntityManager em = JPAUtil.getEntityManager();
-        EntityTransaction tx = em.getTransaction();
-        tx.begin();
-        testCategory = new Category("Intégration Test Cat " + System.currentTimeMillis());
-        categoryRepository.create(testCategory, em);
-        tx.commit();
+        testCategory = em.find(Category.class, 1L);
         em.close();
+
+        if (testCategory == null) {
+            throw new RuntimeException("La catégorie ID 1 est introuvable. Vérifiez import.sql");
+        }
     }
 
     @AfterAll
     static void tearDownAll() {
-        JPAUtil.close();
+        // Ne pas fermer le EMF statique ici car il est partagé entre les tests
     }
 
     // =========================================

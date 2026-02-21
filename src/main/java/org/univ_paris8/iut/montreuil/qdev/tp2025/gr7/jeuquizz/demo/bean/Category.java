@@ -1,8 +1,8 @@
 package org.univ_paris8.iut.montreuil.qdev.tp2025.gr7.jeuquizz.demo.bean;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "categories")
@@ -17,7 +17,8 @@ public class Category {
     @Column(nullable = false, length = 50)
     private String label;
 
-    public Category() {}
+    public Category() {
+    }
 
     public Category(String label) {
         this.label = label;

@@ -1,7 +1,7 @@
 package org.univ_paris8.iut.montreuil.qdev.tp2025.gr7.jeuquizz.demo.bean;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
+import javax.validation.constraints.NotBlank;
 
 import java.sql.Timestamp;
 
@@ -12,6 +12,9 @@ public class Annonce {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
+    @Version
+    private int version;
 
     @Column(nullable = false, length = 100)
     @NotBlank(message = "Titre nécessaire")

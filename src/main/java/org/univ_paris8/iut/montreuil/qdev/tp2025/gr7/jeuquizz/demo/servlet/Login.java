@@ -26,7 +26,7 @@ public class Login extends HttpServlet {
             throws ServletException, IOException {
 
         HttpSession session = request.getSession(false);
-        if (session != null && session.getAttribute("userId") != null) {
+        if (session != null && session.getAttribute("id") != null) {
             response.sendRedirect(request.getContextPath() + "/annonce/list");
             return;
         }
