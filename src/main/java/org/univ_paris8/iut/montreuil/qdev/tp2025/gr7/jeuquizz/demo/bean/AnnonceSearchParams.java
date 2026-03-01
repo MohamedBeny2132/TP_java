@@ -9,6 +9,8 @@ public class AnnonceSearchParams {
     private Status status;
     private int page = 1;
     private int size = 10;
+    private String sortBy = "date";
+    private String sortDir = "desc";
 
     public String getKeyword() {
         return keyword;
@@ -48,5 +50,21 @@ public class AnnonceSearchParams {
 
     public void setSize(int size) {
         this.size = Math.max(1, size);
+    }
+
+    public String getSortBy() {
+        return sortBy;
+    }
+
+    public void setSortBy(String sortBy) {
+        this.sortBy = sortBy;
+    }
+
+    public String getSortDir() {
+        return sortDir;
+    }
+
+    public void setSortDir(String sortDir) {
+        this.sortDir = sortDir;
     }
 }

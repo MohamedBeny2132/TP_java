@@ -7,13 +7,36 @@ public class PaginatedResponses<T> {
     private int currentPage;
     private int totalPages;
 
+    public PaginatedResponses() {
+    }
+
     public PaginatedResponses(List<T> annonces, int currentPage, int totalPages) {
         this.items = annonces;
         this.currentPage = currentPage;
         this.totalPages = totalPages;
     }
 
-    public List<T> getItems() { return items; }
-    public int getCurrentPage() { return currentPage; }
-    public int getTotalPages() { return totalPages; }
+    public List<T> getItems() {
+        return items;
+    }
+
+    public void setItems(List<T> items) {
+        this.items = items;
+    }
+
+    public int getCurrentPage() {
+        return currentPage;
+    }
+
+    public void setCurrentPage(int currentPage) {
+        this.currentPage = currentPage;
+    }
+
+    public int getTotalPages() {
+        return totalPages;
+    }
+
+    public void setTotalPages(int totalPages) {
+        this.totalPages = totalPages;
+    }
 }

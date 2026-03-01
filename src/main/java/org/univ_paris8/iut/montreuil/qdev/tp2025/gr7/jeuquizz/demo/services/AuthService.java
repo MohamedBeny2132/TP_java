@@ -1,41 +1,32 @@
 package org.univ_paris8.iut.montreuil.qdev.tp2025.gr7.jeuquizz.demo.services;
 
+import org.mindrot.jbcrypt.BCrypt;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.univ_paris8.iut.montreuil.qdev.tp2025.gr7.jeuquizz.demo.bean.User;
 import org.univ_paris8.iut.montreuil.qdev.tp2025.gr7.jeuquizz.demo.dao.UserRepository;
-import org.mindrot.jbcrypt.BCrypt;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityTransaction;
 
+import java.util.Optional;
+
+@Service
 public class AuthService {
 
+    @Autowired
     private UserRepository userRepository;
 
-    public AuthService() {
-        this.userRepository = new UserRepository();
-    }
-
-    public User login(String email, String password) {
+    public User authenticate(String email, String password) {
         if (email == null || email.isEmpty() || password == null || password.isEmpty()) {
             return null;
         }
 
-        EntityManager em = org.univ_paris8.iut.montreuil.qdev.tp2025.gr7.jeuquizz.demo.utils.JPAUtil.getEntityManager();
-        try {
-            User user = userRepository.findByEmail(email, em);
-
-            if (user == null) {
-                return null;
-            }
-
-            // Vérifier le mot de passe avec BCrypt
+        Optional<User> userOpt = userRepository.findByEmail(email);
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
             if (BCrypt.checkpw(password, user.getPassword())) {
                 return user;
             }
-
-            return null;
-        } finally {
-            em.close();
         }
+        return null;
     }
 
     public boolean register(User user) {
@@ -43,32 +34,14 @@ public class AuthService {
             return false;
         }
 
-        EntityManager em = org.univ_paris8.iut.montreuil.qdev.tp2025.gr7.jeuquizz.demo.utils.JPAUtil.getEntityManager();
-        jakarta.persistence.EntityTransaction transaction = em.getTransaction();
-
-        try {
-            transaction.begin();
-
-            User existingUser = userRepository.findByEmail(user.getEmail(), em);
-            if (existingUser != null) {
-                return false;
-            }
-
-            String hashedPassword = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
-            user.setPassword(hashedPassword);
-
-            userRepository.create(user, em);
-            transaction.commit();
-            return true;
-        } catch (Exception e) {
-            if (transaction.isActive()) {
-                transaction.rollback();
-            }
-            e.printStackTrace();
+        Optional<User> existingUser = userRepository.findByEmail(user.getEmail());
+        if (existingUser.isPresent()) {
             return false;
-        } finally {
-            em.close();
         }
-    }
 
+        String hashedPassword = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
+        user.setPassword(hashedPassword);
+        userRepository.save(user);
+        return true;
+    }
 }

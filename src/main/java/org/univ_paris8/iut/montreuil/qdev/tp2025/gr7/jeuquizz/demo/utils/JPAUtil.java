@@ -7,7 +7,7 @@ import jakarta.persistence.Persistence;
 public class JPAUtil {
 
     private static final EntityManagerFactory emf =
-            Persistence.createEntityManagerFactory("default"); // nom du persistence-unit dans persistence.xml
+            Persistence.createEntityManagerFactory("default"); 
 
     public static EntityManager getEntityManager() {
         return emf.createEntityManager();
