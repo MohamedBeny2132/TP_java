@@ -2,39 +2,49 @@ package com.example.blockchain;
 
 public class ApplicationBlockChain {
     public static void main(String[] args) {
-        System.out.println("=== Simulation Blockchain Billetterie (Expert) ===");
+        System.out.println("=== Blockchain Billetterie ===\n");
 
-        // Initialisation avec difficulté 4 (4 zéros au début du hash)
-        Blockchain ticketChain = new Blockchain(4);
+        Blockchain ticketChain = new Blockchain(new PoAStrategy());
 
-        String event = "Concert_Summer_2026";
-        String artist = "Daft Punk (Reunion)";
+        String event = "Techno_Parade_2026";
+        String artist = "Amelie Lens";
 
-        System.out.println("\n--- Étape 1: Achat initial ---");
+        System.out.println("\n--- 1. Emission du ticket (PoA) ---");
         ticketChain.addBlock(event, artist, "VALIDE", "Alice");
 
-        System.out.println("\n--- Étape 2: Première revente ---");
+        System.out.println("\n--- 2. Revente [PoW - Difficulte 4] ---");
+        ticketChain.setStrategy(new PoWStrategy(4));
         ticketChain.addBlock(event, artist, "REVENTE", "Bob");
 
-        System.out.println("\n--- Étape 3: Deuxième revente ---");
+        System.out.println("\n--- 3. Revente [PoS - Selection par Stake] ---");
+        ticketChain.setStrategy(new PoSStrategy());
         ticketChain.addBlock(event, artist, "REVENTE", "Charlie");
 
-        System.out.println("\n--- Étape 4: Utilisation du ticket ---");
-        ticketChain.addBlock(event, artist, "UTILISÉ", "Charlie");
+        PBFTStrategy pbft = new PBFTStrategy();
+        ticketChain.setStrategy(pbft);
 
-        System.out.println("\n--- Étape 5: Tentative de réutilisation (Fraude) ---");
-        // Dans une vraie blockchain, on vérifierait le statut avant d'ajouter.
-        // Ici on montre que l'historique est immuable.
-        ticketChain.addBlock(event, artist, "INVALIDE (Double usage)", "Charlie");
+        System.out.println("\n--- 4. Utilisation [PBFT] - Aucun vote ---");
+        ticketChain.addBlock(event, artist, "UTILISE", "Charlie");
 
-        System.out.println("\nAffichage de l'historique complet du ticket :");
+        System.out.println("\n--- Les noeuds votent un par un ---");
+        pbft.submitVote("Terminal_Nord", true);
+        pbft.submitVote("Serveur_Central", true);
+
+        System.out.println("\n--- Tentative de retry (2 votes) ---");
+        ticketChain.retryPendingBlocks();
+
+        System.out.println("\n--- Un 3eme noeud vote ---");
+        pbft.submitVote("Terminal_Sud", true);
+
+        System.out.println("\n--- Retry avec 3 votes (Quorum atteint !) ---");
+        ticketChain.retryPendingBlocks();
+
         ticketChain.displayChain();
+        System.out.println("\nIntegrite : " + (ticketChain.isChainValid() ? "VALIDE" : "CORROMPUE"));
 
-        System.out.println("Vérification d'intégrité globale : " + (ticketChain.isChainValid() ? "OK" : "CORROMPUE"));
+        BlockchainExporter exporter = new BlockchainExporter();
+        exporter.exportAsJson(ticketChain.getChain(), "blockchain_solid.json");
 
-        System.out.println("\nSauvegarde des données...");
-        ticketChain.exportAsJson();
-
-        System.out.println("\n=== Fin de la simulation Billetterie ===");
+        System.out.println("\n=== Fin de la simulation ===");
     }
 }
