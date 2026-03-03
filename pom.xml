@@ -1,75 +1,37 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-  <groupId>random.whatsap</groupId>
-  <artifactId>tp_ia</artifactId>
-  <version>1.0-SNAPSHOT</version>
-  <packaging>jar</packaging>
+    <groupId>com.paris.sorbonne.master</groupId>
+    <artifactId>blockchain-tracking</artifactId>
+    <version>1.0-SNAPSHOT</version>
 
-  <name>tp_ia</name>
-  <url>http://maven.apache.org</url>
+    <properties>
+        <maven.compiler.source>16</maven.compiler.source>
+        <maven.compiler.target>16</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
 
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>16</maven.compiler.source>
-    <maven.compiler.target>16</maven.compiler.target>
-    <tribuo.version>4.3.0</tribuo.version>
-  </properties>
+    <dependencies>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.10.1</version>
+        </dependency>
+    </dependencies>
 
-  <dependencies>
-    <dependency>
-      <groupId>org.tribuo</groupId>
-      <artifactId>tribuo-core</artifactId>
-      <version>${tribuo.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.tribuo</groupId>
-      <artifactId>tribuo-classification-core</artifactId>
-      <version>${tribuo.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.tribuo</groupId>
-      <artifactId>tribuo-data</artifactId>
-      <version>${tribuo.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.tribuo</groupId>
-      <artifactId>tribuo-classification-sgd</artifactId>
-      <version>${tribuo.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.tribuo</groupId>
-      <artifactId>tribuo-classification-tree</artifactId>
-      <version>${tribuo.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.tribuo</groupId>
-      <artifactId>tribuo-math</artifactId>
-      <version>${tribuo.version}</version>
-    </dependency>
-  </dependencies>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <version>3.1.2</version>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>exec-maven-plugin</artifactId>
-        <version>3.1.0</version>
-        <configuration>
-          <mainClass>random.whatsap.LogistiqueLMIA</mainClass>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <mainClass>com.example.blockchain.ApplicationBlockChain</mainClass>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
