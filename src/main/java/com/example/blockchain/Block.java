@@ -5,19 +5,32 @@ import java.time.Instant;
 
 public class Block {
     public int index;
-    public String timestamp, data, previousHash, hash;
+    public String timestamp;
+    public String previousHash;
+    public String hash;
+    public int nonce;
 
-    public Block(int index, String data, String previousHash) {
+    // Ticketing specific data
+    public String eventId;
+    public String artist;
+    public String status;
+    public String owner;
+
+    public Block(int index, String eventId, String artist, String status, String owner, String previousHash) {
         this.index = index;
         this.timestamp = Instant.now().toString();
-        this.data = data;
+        this.eventId = eventId;
+        this.artist = artist;
+        this.status = status;
+        this.owner = owner;
         this.previousHash = previousHash;
         this.hash = calculateHash();
     }
 
     public String calculateHash() {
         try {
-            String input = index + timestamp + data + previousHash;
+            // Include nonce and ticketing fields in the hash
+            String input = index + timestamp + eventId + artist + status + owner + previousHash + nonce;
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             byte[] hashBytes = digest.digest(input.getBytes("UTF-8"));
             StringBuilder hexString = new StringBuilder();
@@ -28,5 +41,15 @@ public class Block {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    // Proof of Work mechanism
+    public void mineBlock(int difficulty) {
+        String target = new String(new char[difficulty]).replace('\0', '0');
+        while (!hash.substring(0, difficulty).equals(target)) {
+            nonce++;
+            hash = calculateHash();
+        }
+        System.out.println("Block Miné !!! Hash: " + hash);
     }
 }
